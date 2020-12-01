@@ -1,9 +1,12 @@
 #include <random>
 #include <ctime>
 
+
 const int min_weight = 10;
 const int max_weight = 1000;
-const int infinity = 100000000;
+const int infinity = 1000000000;
+
+
 
 // ребро из 'u' в 'v' с весом 'w'
 struct edge {
@@ -69,16 +72,21 @@ int* bellman_ford(edge* graph, int n, int m, int source)
 int main()
 {
 
-    edge graph[4];
-    graph[0] = { 0, 1, 5 };
-    graph[1] = { 0, 2, 10 };
-    graph[2] = { 1, 2, 3 };
-    graph[3] = { 1, 0, 7 };
-    int* res = bellman_ford(graph, 3, 4, 1);
-    for (int i = 0; i < 3; ++i)
-    {
-        printf("from vertex 1 to vertex %d: %d\n", i, res[i]);
+    int n = 1000, m = 100000, source = 0;
+    int k = 10; // число экспериментов
+    for (int i = 0; i < k; ++i)
+    {      
+        edge* graph = generate(n, m);
+
+        clock_t start = clock();
+        int* res = bellman_ford(graph, n, m, source);
+        clock_t end = clock();
+    
+        printf("time in milliseconds: %d\n", end - start);
+        delete[] graph;
+        delete[] res;
     }
-    delete[] res;
+    
+
     return 0;
 }
