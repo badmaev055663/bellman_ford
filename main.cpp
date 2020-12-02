@@ -57,7 +57,7 @@ int* bellman_ford(edge* graph, int n, int m, int source)
     }
     dist[source] = 0; // расстояние от источника до себя равно 0
 
-    // итерации до тех пор, пока в массиве расстояний происходят изменения
+    // итерации до тех пор, пока в массиве расстояний происходят изменения 
     for (;;)
     {
         bool changed = false; // отслеживать изменения в графе
@@ -78,28 +78,41 @@ int* bellman_ford(edge* graph, int n, int m, int source)
     return dist;
 }
 
-
-int main()
+// провести тест 'k' раз со случайными графами с 'n' вершинами и 'm' ребрами
+// выводит среднее время за 'k' испытаний
+void test(int n, int m, int k)
 {
-
-    int n = 10000;    // число вершин
-    int m = 10000000; // число ребер
-    int source = 0;   // источник
-    int k = 20;       // число экспериментов
-
+    double mean = 0.0; // среднее времени выполнения
+  
     for (int i = 0; i < k; ++i)
     {
         edge* graph = generate(n, m);
+        int source = rand() % n; // случайная вершина становится источником
 
         clock_t start = clock();
         int* res = bellman_ford(graph, n, m, source);
         clock_t end = clock();
+        clock_t delta_time = end - start;
 
-        printf("time in milliseconds: %d\n", end - start);
+        mean += delta_time;   
+
         delete[] graph;
         delete[] res;
     }
+    mean /= k; // подсчет среднего 
+    printf("mean time in milliseconds: %.1lf\n", mean);
+}
 
 
+int main()
+{
+    int n = 10000;   // количество вершин
+    int m = 1000000;  // количество ребер 
+    int k = 20;      // число испытаний при фиксированном размере входа
+
+    test(n, m, k);         // начальный тест
+    test(n * 2, m, k);     // тест с удвоенным количеством вершин 
+    test(n, m * 2, k);     // тест с удвоенным количеством ребер
+    test(n * 2, m * 2, k); // тест с удвоенным количеством и вершин и ребер
     return 0;
 }
